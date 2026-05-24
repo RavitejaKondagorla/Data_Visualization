@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Visualization</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+
+<body>
+    <div>
+        <h2>Sorting Visualization</h2>
+        <button onclick="startSorting('Bubble Sort')">Bubble Sort</button>
+        <button onclick="startSorting('Insertion Sort')">Insertion Sort</button>
+        <button onclick="startSorting('Selection Sort')">Selection Sort</button>
+        <button onclick="startSorting('Quick Sort')">Quick Sort</button>
+        <button onclick="startSorting('Merge Sort')">Merge Sort</button>
+        <button onclick="startSorting('Heap Sort')">Heap Sort</button>
+    </div>
+
+    <script>
+        function generateStartingArray(n, minVal, maxVal) {
+            const array = [];
+            for (let i = 0; i < n; i++) {
+                array.push(Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal);
+            }
+            return array;
+        }
+
+        function updateArrayVisualization(array) {
+            // Use D3.js or any other library to update the visualization
+            // This could involve updating SVG elements, canvas, or any other graphics
+            console.log("Array updated:", array);
+        }
+
+        function startSorting(algorithm) {
+            const n = 20;
+            const minVal = 0;
+            const maxVal = 100;
+            const array = generateStartingArray(n, minVal, maxVal);
+
+            switch (algorithm) {
+                case 'Bubble Sort':
+                    performBubbleSort(array);
+                    break;
+                case 'Insertion Sort':
+                    performInsertionSort(array);
+                    break;
+                case 'Selection Sort':
+                    performSelectionSort(array);
+                    break;
+                case 'Quick Sort':
+                    performQuickSort(array);
+                    break;
+                case 'Merge Sort':
+                    performMergeSort(array);
+                    break;
+                case 'Heap Sort':
+                    performHeapSort(array);
+                    break;
+                default:
+                    console.error('Invalid algorithm');
+            }
+        }
+
+        function performBubbleSort(array) {
+            for (let i = 0; i < array.length - 1; i++) {
+                for (let j = 0; j < array.length - 1 - i; j++) {
+                    if (array[j] > array[j + 1]) {
+                        // Swap elements
+                        const temp = array[j];
+                        array[j] = array[j + 1];
+                        array[j + 1] = temp;
+
+                        // Update visualization after each swap
+                        updateArrayVisualization(array);
+                    }
+                }
+            }
+        }
+
+        function performInsertionSort(array) {
+            for (let i = 1; i < array.length; i++) {
+                const current = array[i];
+                let j = i;
+
+                while (j > 0 && array[j - 1] > current) {
+                    array[j] = array[j - 1];
+                    j--;
+
+                    // Update visualization after each swap
+                    updateArrayVisualization(array);
+                }
+
+                array[j] = current;
+            }
+        }
+
+        function performSelectionSort(array) {
+            for (let i = 0; i < array.length - 1; i++) {
+                let minIndex = i;
+                for (let j = i + 1; j < array.length; j++) {
+                    if (array[j] < array[minIndex]) {
+                        minIndex = j;
+                    }
+                }
+
+                if (minIndex !== i) {
+                    // Swap elements
+                    const temp = array[i];
+                    array[i] = array[minIndex];
+                    array[minIndex] = temp;
+
+                    // Update visualization after each swap
+                    updateArrayVisualization(array);
+                }
+            }
+        }
+
+        function performQuickSort(array) {
+            quickSort(array, 0, array.length - 1);
+        }
+
+        function quickSort(array, low, high) {
+            if (low < high) {
+                const pivotIndex = partition(array, low, high);
+                quickSort(array, low, pivotIndex - 1);
+                quickSort(array, pivotIndex + 1, high);
+            }
+        }
+
+        function partition(array, low, high) {
+            const pivot = array[high];
+            let i = low - 1;
+
+            for (let j = low; j < high; j++) {
+                if (array[j] <= pivot) {
+                    i++;
+                    // Swap elements
+                    const temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+
+                    // Update visualization after each swap
+                    updateArrayVisualization(array);
+                }
+            }
+
+            // Swap elements
+            const temp = array[i + 1];
+            array[i + 1] = array[high];
+            array[high] = temp;
+
+            // Update visualization after each swap
+            updateArrayVisualization(array);
+
+            return i + 1;
+        }
+
+        function performMergeSort(array) {
+            mergeSort(array, 0, array.length - 1);
+        }
+
+        function mergeSort(array, low, high) {
+            if (low < high) {
+                const mid = Math.floor((low + high) / 2);
+                mergeSort(array, low, mid);
+                mergeSort(array, mid + 1, high);
+                merge(array, low, mid, high);
+            }
+        }
+
+        function merge(array, low, mid, high) {
+            const leftArray = array.slice(low, mid + 1);
+            const rightArray = array.slice(mid + 1, high + 1);
+
+            let i = 0, j = 0, k = low;
+
+            while (i < leftArray.length && j < rightArray.length) {
+                if (leftArray[i] <= rightArray[j]) {
+                    array[k] = leftArray[i];
+                    i++;
+                } else {
+                    array[k] = rightArray[j];
+                    j++;
+                }
+
+                // Update visualization after each merge
+                updateArrayVisualization(array);
+                k++;
+            }
+
+            while (i < leftArray.length) {
+                array[k] = leftArray[i];
+                i++;
+                k++;
+
+                // Update visualization after each merge
+                updateArrayVisualization(array);
+            }
+
+            while (j < rightArray.length) {
+                array[k] = rightArray[j];
+                j++;
+                k++;
+
+                // Update visualization after each merge
+                updateArrayVisualization(array);
+            }
+        }
+
+        function performHeapSort(array) {
+            const n = array.length;
+
+            for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+                heapify(array, n, i);
+            }
+
+            for (let i = n - 1; i > 0; i--) {
+                // Swap elements
+                const temp = array[0];
+                array[0] = array[i];
+                array[i] = temp;
+
+                // Update visualization after each swap
+                updateArrayVisualization(array);
+
+                heapify(array, i, 0);
+            }
+        }
+
+        function heapify(array, n, i) {
+            let largest = i;
+            const left = 2 * i + 1;
+            const right = 2 * i + 2;
+
+            if (left < n && array[left] > array[largest]) {
+                largest = left;
+            }
+
+            if (right < n && array[right] > array[largest]) {
+                largest = right;
+            }
+
+            if (largest !== i) {
+                // Swap elements
+                const temp = array[i];
+                array[i] = array[largest];
+                array[largest] = temp;
+
+                // Update visualization after each swap
+                updateArrayVisualization(array);
+
+                heapify(array, n, largest);
+            }
+        }
+    </script>
+</body>
+
+</html>
